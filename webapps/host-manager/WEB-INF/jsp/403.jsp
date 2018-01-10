@@ -34,19 +34,14 @@
     You are not authorized to view this page.
    </p>
    <p>
-    By default the Host Manager is only accessible from a browser running on the
-    same machine as Tomcat. If you wish to modify this restriction, you'll need
-    to edit the Host Manager's <tt>context.xml</tt> file.
-   </p>
-   <p>
     If you have already configured the Host Manager application to allow access
-    and you have used your browsers back button, used a saved book-mark or
+    and you have used your browser's back button, used a saved book-mark or
     similar then you may have triggered the cross-site request forgery (CSRF)
     protection that has been enabled for the HTML interface of the Host Manager
-    application. You will need to reset this protection by returning to the
+    application. You will need to reset this protection by returning to the 
     <a href="<%=request.getContextPath()%>/html">main Host Manager page</a>.
     Once you return to this page, you will be able to continue using the Host
-    Manager application's HTML interface normally. If you continue to see this
+    Manager appliction's HTML interface normally. If you continue to see this
     access denied message, check that you have the necessary permissions to
     access this application.
    </p>
@@ -65,10 +60,11 @@
 &lt;user username="tomcat" password="s3cret" roles="admin-gui"/&gt;
 </pre>
    <p>
-    Note that for Tomcat 7 onwards, the roles required to use the host manager
-    application were changed from the single <tt>admin</tt> role to the
+    Note that for Tomcat 6.0.30 onwards, the roles required to use the host
+    manager application were changed from the single <tt>admin</tt> role to the
     following two roles. You will need to assign the role(s) required for
-    the functionality you wish to access.
+    the functionality you wish to access. Note the <tt>admin</tt> role is still
+    valid but by-passes the CSRF protection.
    </p>
     <ul>
       <li><tt>admin-gui</tt> - allows access to the HTML GUI</li>
@@ -79,6 +75,8 @@
     To maintain the CSRF protection:
    </p>
    <ul>
+    <li>The deprecated <tt>admin</tt> role should not be assigned to any
+        user.</li>
     <li>Users with the <tt>admin-gui</tt> role should not be granted the
        <tt>admin-script</tt> role.</li>
     <li>If the text interface is accessed through a browser (e.g. for testing

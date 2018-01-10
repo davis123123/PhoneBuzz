@@ -19,10 +19,6 @@ package compressionFilters;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -34,17 +30,15 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * @author Amy Roh
  * @author Dmitri Valdin
  */
-public class CompressionServletResponseWrapper
-        extends HttpServletResponseWrapper {
+public class CompressionServletResponseWrapper extends HttpServletResponseWrapper {
 
     // ----------------------------------------------------- Constructor
 
     /**
      * Calls the parent constructor which creates a ServletResponse adaptor
      * wrapping the given response object.
-     *
-     * @param response The response object to be wrapped.
      */
+
     public CompressionServletResponseWrapper(HttpServletResponse response) {
         super(response);
         origResponse = response;
@@ -59,12 +53,20 @@ public class CompressionServletResponseWrapper
     /**
      * Original response
      */
-    protected final HttpServletResponse origResponse;
+
+    protected HttpServletResponse origResponse = null;
+
+    /**
+     * Descriptive information about this Response implementation.
+     */
+
+    protected static final String info = "CompressionServletResponseWrapper";
 
     /**
      * The ServletOutputStream that has been returned by
      * <code>getOutputStream()</code>, if any.
      */
+
     protected ServletOutputStream stream = null;
 
 
@@ -72,79 +74,52 @@ public class CompressionServletResponseWrapper
      * The PrintWriter that has been returned by
      * <code>getWriter()</code>, if any.
      */
+
     protected PrintWriter writer = null;
 
     /**
      * The threshold number to compress
      */
-    protected int compressionThreshold = 0;
-
-    /**
-     * The compression buffer size
-     */
-    protected int compressionBuffer = 8192;  // 8KB default
-
-    /**
-     * The mime types to compress
-     */
-    protected String[] compressionMimeTypes = {"text/html", "text/xml", "text/plain"};
+    protected int threshold = 0;
 
     /**
      * Debug level
      */
-    protected int debug = 0;
+    private int debug = 0;
 
     /**
-     * keeps a copy of all headers set
+     * Content type
      */
-    private final Map<String,String> headerCopies = new HashMap<>();
-
+    protected String contentType = null;
 
     // --------------------------------------------------------- Public Methods
 
 
     /**
-     * Set threshold number.
-     *
-     * @param threshold The new compression threshold
+     * Set content type
+     */
+    public void setContentType(String contentType) {
+        if (debug > 1) {
+            System.out.println("setContentType to "+contentType);
+        }
+        this.contentType = contentType;
+        origResponse.setContentType(contentType);
+    }
+
+
+    /**
+     * Set threshold number
      */
     public void setCompressionThreshold(int threshold) {
         if (debug > 1) {
             System.out.println("setCompressionThreshold to " + threshold);
         }
-        this.compressionThreshold = threshold;
+        this.threshold = threshold;
     }
 
-    /**
-     * Set compression buffer.
-     *
-     * @param buffer New size of buffer to use for compressed output
-     */
-    public void setCompressionBuffer(int buffer) {
-        if (debug > 1) {
-            System.out.println("setCompressionBuffer to " + buffer);
-        }
-        this.compressionBuffer = buffer;
-    }
 
     /**
-     * Set compressible mime types.
-     *
-     * @param mimeTypes The new list of mime types that will be considered for
-     *                  compression
-     */
-    public void setCompressionMimeTypes(String[] mimeTypes) {
-        if (debug > 1) {
-            System.out.println("setCompressionMimeTypes to " +
-                    Arrays.toString(mimeTypes));
-        }
-        this.compressionMimeTypes = mimeTypes;
-    }
-
-    /**
-     * Set debug level.
-     *
-     * @param debug The new debug level
+     * Set debug level
      */
     public void setDebugLevel(int debug) {
         this.debug = debug;
@@ -156,23 +131,18 @@ public class CompressionServletResponseWrapper
      * associated with this Response.
      *
      * @exception IOException if an input/output error occurs
-     *
-     * @return A new servlet output stream that compressed any data written to
-     *         it
      */
-    protected ServletOutputStream createOutputStream() throws IOException {
+    public ServletOutputStream createOutputStream() throws IOException {
         if (debug > 1) {
             System.out.println("createOutputStream gets called");
         }
 
-        CompressionResponseStream stream = new CompressionResponseStream(
-                this, origResponse.getOutputStream());
+        CompressionResponseStream stream = new CompressionResponseStream(origResponse);
         stream.setDebugLevel(debug);
-        stream.setCompressionThreshold(compressionThreshold);
-        stream.setCompressionBuffer(compressionBuffer);
-        stream.setCompressionMimeTypes(compressionMimeTypes);
+        stream.setBuffer(threshold);
 
         return stream;
+
     }
 
 
@@ -188,7 +158,6 @@ public class CompressionServletResponseWrapper
                     stream.close();
             }
         } catch (IOException e) {
-            // Ignore
         }
     }
 
@@ -201,10 +170,9 @@ public class CompressionServletResponseWrapper
      *
      * @exception IOException if an input/output error occurs
      */
-    @Override
     public void flushBuffer() throws IOException {
         if (debug > 1) {
-            System.out.println("flush buffer @ GZipServletResponseWrapper");
+            System.out.println("flush buffer @ CompressionServletResponseWrapper");
         }
         ((CompressionResponseStream)stream).flush();
 
@@ -217,7 +185,6 @@ public class CompressionServletResponseWrapper
      *  already been called for this response
      * @exception IOException if an input/output error occurs
      */
-    @Override
     public ServletOutputStream getOutputStream() throws IOException {
 
         if (writer != null)
@@ -240,7 +207,6 @@ public class CompressionServletResponseWrapper
      *  already been called for this response
      * @exception IOException if an input/output error occurs
      */
-    @Override
     public PrintWriter getWriter() throws IOException {
 
         if (writer != null)
@@ -253,6 +219,7 @@ public class CompressionServletResponseWrapper
         if (debug > 1) {
             System.out.println("stream is set to "+stream+" in getWriter");
         }
+        //String charset = getCharsetFromContentType(contentType);
         String charEnc = origResponse.getCharacterEncoding();
         if (debug > 1) {
             System.out.println("character encoding is " + charEnc);
@@ -264,29 +231,13 @@ public class CompressionServletResponseWrapper
         } else {
             writer = new PrintWriter(stream);
         }
-
+        
         return (writer);
-    }
 
-    @Override
-    public String getHeader(String name) {
-        return headerCopies.get(name);
-    }
-
-    @Override
-    public void addHeader(String name, String value) {
-        if (headerCopies.containsKey(name)) {
-            String existingValue = headerCopies.get(name);
-            if ((existingValue != null) && (existingValue.length() > 0)) headerCopies.put(name, existingValue + "," + value);
-            else headerCopies.put(name, value);
-        } else headerCopies.put(name, value);
-        super.addHeader(name, value);
     }
 
 
-    @Override
-    public void setHeader(String name, String value) {
-        headerCopies.put(name, value);
-        super.setHeader(name, value);
+    public void setContentLength(int length) {
     }
+
 }

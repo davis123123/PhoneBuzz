@@ -1,39 +1,11 @@
-<!DOCTYPE html SYSTEM "about:legacy-compat">
-<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><link href="./images/docs-stylesheet.css" rel="stylesheet" type="text/css"><title>Apache Tomcat 8 (8.5.24) - JNDI Datasource HOW-TO</title><meta name="author" content="Les Hughes"><meta name="author" content="David Haraburda"><meta name="author" content="Glenn Nielsen"><meta name="author" content="Yoav Shapira"><script type="application/javascript" data-comments-identifier="tomcat-8.5-doc/jndi-datasource-examples-howto">
-    "use strict"; // Enable strict mode
-
-    (function() {
-      var thisScript = document.currentScript;
-      if (!thisScript) { // Workaround for IE <= 11
-        var scripts = document.getElementsByTagName("script");
-        thisScript = scripts[scripts.length - 1];
-      }
-      document.addEventListener("DOMContentLoaded", (function() {
-        var commentsDiv = document.getElementById("comments_thread");
-        var commentsShortname = "tomcat";
-        var commentsIdentifier = "http://tomcat.apache.org/" +
-          thisScript.getAttribute("data-comments-identifier") + ".html";
-
-        (function(w, d) {
-          if (w.location.hostname.toLowerCase() == "tomcat.apache.org") {
-            var s = d.createElement("script");
-            s.type = "application/javascript";
-            s.async = true;
-            s.src = "https://comments.apache.org/show_comments.lua?site=" +
-              encodeURIComponent(commentsShortname) +
-              "&page=" + encodeURIComponent(commentsIdentifier);
-            d.head.appendChild(s);
-          } else {
-            commentsDiv.appendChild(d.createTextNode("Comments are disabled for this page at the moment."));
-          }
-        })(window, document);
-      }), false);
-    })();
-  </script></head><body><div id="wrapper"><header><div id="header"><div><div><div class="logo noPrint"><a href="http://tomcat.apache.org/"><img alt="Tomcat Home" src="./images/tomcat.png"></a></div><div style="height: 1px;"></div><div class="asfLogo noPrint"><a href="http://www.apache.org/" target="_blank"><img src="./images/asf-logo.svg" alt="The Apache Software Foundation" style="width: 266px; height: 83px;"></a></div><h1>Apache Tomcat 8</h1><div class="versionInfo">
-          Version 8.5.24,
-          <time datetime="2017-11-27">Nov 27 2017</time></div><div style="height: 1px;"></div><div style="clear: left;"></div></div></div></div></header><div id="middle"><div><div id="mainLeft" class="noprint"><div><nav><div><h2>Links</h2><ul><li><a href="index.html">Docs Home</a></li><li><a href="http://wiki.apache.org/tomcat/FAQ">FAQ</a></li><li><a href="#comments_section">User Comments</a></li></ul></div><div><h2>User Guide</h2><ul><li><a href="introduction.html">1) Introduction</a></li><li><a href="setup.html">2) Setup</a></li><li><a href="appdev/index.html">3) First webapp</a></li><li><a href="deployer-howto.html">4) Deployer</a></li><li><a href="manager-howto.html">5) Manager</a></li><li><a href="realm-howto.html">6) Realms and AAA</a></li><li><a href="security-manager-howto.html">7) Security Manager</a></li><li><a href="jndi-resources-howto.html">8) JNDI Resources</a></li><li><a href="jndi-datasource-examples-howto.html">9) JDBC DataSources</a></li><li><a href="class-loader-howto.html">10) Classloading</a></li><li><a href="jasper-howto.html">11) JSPs</a></li><li><a href="ssl-howto.html">12) SSL/TLS</a></li><li><a href="ssi-howto.html">13) SSI</a></li><li><a href="cgi-howto.html">14) CGI</a></li><li><a href="proxy-howto.html">15) Proxy Support</a></li><li><a href="mbeans-descriptors-howto.html">16) MBeans Descriptors</a></li><li><a href="default-servlet.html">17) Default Servlet</a></li><li><a href="cluster-howto.html">18) Clustering</a></li><li><a href="balancer-howto.html">19) Load Balancer</a></li><li><a href="connectors.html">20) Connectors</a></li><li><a href="monitoring.html">21) Monitoring and Management</a></li><li><a href="logging.html">22) Logging</a></li><li><a href="apr.html">23) APR/Native</a></li><li><a href="virtual-hosting-howto.html">24) Virtual Hosting</a></li><li><a href="aio.html">25) Advanced IO</a></li><li><a href="extras.html">26) Additional Components</a></li><li><a href="maven-jars.html">27) Mavenized</a></li><li><a href="security-howto.html">28) Security Considerations</a></li><li><a href="windows-service-howto.html">29) Windows Service</a></li><li><a href="windows-auth-howto.html">30) Windows Authentication</a></li><li><a href="jdbc-pool.html">31) Tomcat's JDBC Pool</a></li><li><a href="web-socket-howto.html">32) WebSocket</a></li><li><a href="rewrite.html">33) Rewrite</a></li></ul></div><div><h2>Reference</h2><ul><li><a href="RELEASE-NOTES.txt">Release Notes</a></li><li><a href="config/index.html">Configuration</a></li><li><a href="api/index.html">Tomcat Javadocs</a></li><li><a href="servletapi/index.html">Servlet Javadocs</a></li><li><a href="jspapi/index.html">JSP 2.3 Javadocs</a></li><li><a href="elapi/index.html">EL 3.0 Javadocs</a></li><li><a href="websocketapi/index.html">WebSocket 1.1 Javadocs</a></li><li><a href="http://tomcat.apache.org/connectors-doc/">JK 1.2 Documentation</a></li></ul></div><div><h2>Apache Tomcat Development</h2><ul><li><a href="building.html">Building</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="http://wiki.apache.org/tomcat/TomcatVersions">Status</a></li><li><a href="developers.html">Developers</a></li><li><a href="architecture/index.html">Architecture</a></li><li><a href="funcspecs/index.html">Functional Specs.</a></li><li><a href="tribes/introduction.html">Tribes</a></li></ul></div></nav></div></div><div id="mainRight"><div id="content"><h2>JNDI Datasource HOW-TO</h2><h3 id="Table_of_Contents">Table of Contents</h3><div class="text">
-<ul><li><a href="#Introduction">Introduction</a></li><li><a href="#DriverManager,_the_service_provider_mechanism_and_memory_leaks">DriverManager, the service provider mechanism and memory leaks</a></li><li><a href="#Database_Connection_Pool_(DBCP_2)_Configurations">Database Connection Pool (DBCP 2) Configurations</a><ol><li><a href="#Installation">Installation</a></li><li><a href="#Preventing_database_connection_pool_leaks">Preventing database connection pool leaks</a></li><li><a href="#MySQL_DBCP_Example">MySQL DBCP Example</a></li><li><a href="#Oracle_8i,_9i_&amp;_10g">Oracle 8i, 9i &amp; 10g</a></li><li><a href="#PostgreSQL">PostgreSQL</a></li></ol></li><li><a href="#Non-DBCP_Solutions">Non-DBCP Solutions</a></li><li><a href="#Oracle_8i_with_OCI_client">Oracle 8i with OCI client</a><ol><li><a href="#Oracle_8i_with_OCI_client/Introduction">Introduction</a></li><li><a href="#Putting_it_all_together">Putting it all together</a></li></ol></li><li><a href="#Common_Problems">Common Problems</a><ol><li><a href="#Intermittent_Database_Connection_Failures">Intermittent Database Connection Failures</a></li><li><a href="#Random_Connection_Closed_Exceptions">Random Connection Closed Exceptions</a></li><li><a href="#Context_versus_GlobalNamingResources">Context versus GlobalNamingResources</a></li><li><a href="#JNDI_Resource_Naming_and_Realm_Interaction">JNDI Resource Naming and Realm Interaction</a></li></ol></li></ul>
-</div><h3 id="Introduction">Introduction</h3><div class="text">
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><title>Apache Tomcat 6.0 (6.0.48) - JNDI Datasource HOW-TO</title><meta name="author" content="Les Hughes"><meta name="author" content="David Haraburda"><meta name="author" content="Glenn Nielsen"><meta name="author" content="Yoav Shapira"><style type="text/css" media="print">
+			.noPrint {display: none;}
+			td#mainBody {width: 100%;}
+		</style></head><body bgcolor="#ffffff" text="#000000" link="#525D76" alink="#525D76" vlink="#525D76"><table border="0" width="100%" cellspacing="0"><!--PAGE HEADER--><tr><td><!--PROJECT LOGO--><a href="http://tomcat.apache.org/"><img src="./images/tomcat.gif" align="right" alt="
+      The Apache Tomcat Servlet/JSP Container
+    " border="0"></a></td><td><h1><font face="arial,helvetica,sanserif">Apache Tomcat 6.0</font></h1><font face="arial,helvetica,sanserif">Version 6.0.48, Nov 7 2016</font></td><td><!--APACHE LOGO--><a href="http://www.apache.org/"><img src="./images/asf-logo.gif" align="right" alt="Apache Logo" border="0"></a></td></tr></table><table border="0" width="100%" cellspacing="4"><!--HEADER SEPARATOR--><tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr><tr><!--LEFT SIDE NAVIGATION--><td width="20%" valign="top" nowrap="nowrap" class="noPrint"><p><strong>Links</strong></p><ul><li><a href="index.html">Docs Home</a></li><li><a href="http://wiki.apache.org/tomcat/FAQ">FAQ</a></li></ul><p><strong>User Guide</strong></p><ul><li><a href="introduction.html">1) Introduction</a></li><li><a href="setup.html">2) Setup</a></li><li><a href="appdev/index.html">3) First webapp</a></li><li><a href="deployer-howto.html">4) Deployer</a></li><li><a href="manager-howto.html">5) Manager</a></li><li><a href="realm-howto.html">6) Realms and AAA</a></li><li><a href="security-manager-howto.html">7) Security Manager</a></li><li><a href="jndi-resources-howto.html">8) JNDI Resources</a></li><li><a href="jndi-datasource-examples-howto.html">9) JDBC DataSources</a></li><li><a href="class-loader-howto.html">10) Classloading</a></li><li><a href="jasper-howto.html">11) JSPs</a></li><li><a href="ssl-howto.html">12) SSL</a></li><li><a href="ssi-howto.html">13) SSI</a></li><li><a href="cgi-howto.html">14) CGI</a></li><li><a href="proxy-howto.html">15) Proxy Support</a></li><li><a href="mbeans-descriptor-howto.html">16) MBean Descriptor</a></li><li><a href="default-servlet.html">17) Default Servlet</a></li><li><a href="cluster-howto.html">18) Clustering</a></li><li><a href="balancer-howto.html">19) Load Balancer</a></li><li><a href="connectors.html">20) Connectors</a></li><li><a href="monitoring.html">21) Monitoring and Management</a></li><li><a href="logging.html">22) Logging</a></li><li><a href="apr.html">23) APR/Native</a></li><li><a href="virtual-hosting-howto.html">24) Virtual Hosting</a></li><li><a href="aio.html">25) Advanced IO</a></li><li><a href="extras.html">26) Additional Components</a></li><li><a href="maven-jars.html">27) Mavenized</a></li></ul><p><strong>Reference</strong></p><ul><li><a href="RELEASE-NOTES.txt">Release Notes</a></li><li><a href="config/index.html">Configuration</a></li><li><a href="api/index.html">Javadocs</a></li><li><a href="http://tomcat.apache.org/connectors-doc/">JK 1.2 Documentation</a></li></ul><p><strong>Apache Tomcat Development</strong></p><ul><li><a href="building.html">Building</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="http://wiki.apache.org/tomcat/TomcatVersions">Status</a></li><li><a href="developers.html">Developers</a></li><li><a href="architecture/index.html">Architecture</a></li><li><a href="funcspecs/index.html">Functional Specs.</a></li></ul></td><!--RIGHT SIDE MAIN BODY--><td width="80%" valign="top" align="left" id="mainBody"><h1>Apache Tomcat 6.0</h1><h2>JNDI Datasource HOW-TO</h2><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Table of Contents"><!--()--></a><a name="Table_of_Contents"><strong>Table of Contents</strong></a></font></td></tr><tr><td><blockquote>
+<ul><li><a href="#Introduction">Introduction</a></li><li><a href="#DriverManager,_the_service_provider_mechanism_and_memory_leaks">DriverManager, the service provider mechanism and memory leaks</a></li><li><a href="#Database_Connection_Pool_(DBCP)_Configurations">Database Connection Pool (DBCP) Configurations</a><ol><li><a href="#Installation">Installation</a></li><li><a href="#Preventing_database_connection_pool_leaks">Preventing database connection pool leaks</a></li><li><a href="#MySQL_DBCP_Example">MySQL DBCP Example</a></li><li><a href="#Oracle_8i,_9i_&_10g">Oracle 8i, 9i &amp; 10g</a></li><li><a href="#PostgreSQL">PostgreSQL</a></li></ol></li><li><a href="#Non-DBCP_Solutions">Non-DBCP Solutions</a></li><li><a href="#Oracle_8i_with_OCI_client">Oracle 8i with OCI client</a><ol><li><a href="#Oracle_8i_with_OCI_client/Introduction">Introduction</a></li><li><a href="#Putting_it_all_together">Putting it all together</a></li></ol></li><li><a href="#Common_Problems">Common Problems</a><ol><li><a href="#Intermittent_Database_Connection_Failures">Intermittent Database Connection Failures</a></li><li><a href="#Random_Connection_Closed_Exceptions">Random Connection Closed Exceptions</a></li><li><a href="#Context_versus_GlobalNamingResources">Context versus GlobalNamingResources</a></li><li><a href="#JNDI_Resource_Naming_and_Realm_Interaction">JNDI Resource Naming and Realm Interaction</a></li></ol></li></ul>
+</blockquote></td></tr></table><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Introduction"><strong>Introduction</strong></a></font></td></tr><tr><td><blockquote>
 
 <p>JNDI Datasource configuration is covered extensively in the
 JNDI-Resources-HOWTO.  However, feedback from <code>tomcat-user</code> has
@@ -49,22 +21,19 @@ to the wider audience, or if you feel we can improve this section in anyway.</p>
 
 <p>
 <b>Please note that JNDI resource configuration changed somewhat between
-Tomcat 7.x and Tomcat 8.x as they are using different versions of
-Apache Commons DBCP library.</b>  You will most likely need to modify older
+Tomcat 5.0.x and Tomcat 5.5.x.</b>  You will most likely need to modify older
 JNDI resource configurations to match the syntax in the example below in order
-to make them work in Tomcat 8.
-See <a href="http://tomcat.apache.org/migration.html">Tomcat Migration Guide</a>
-for details.
+to make them work in Tomcat 6.x.x.
 </p>
 
 <p>
-Also, please note that JNDI DataSource configuration in general, and this
-tutorial in particular, assumes that you have read and understood the
-<a href="config/context.html">Context</a> and
+Also, please note that JNDI DataSource configuration in general, and this 
+tutorial in particular, assumes that you have read and understood the 
+<a href="config/context.html">Context</a> and 
 <a href="config/host.html">Host</a> configuration references, including
 the section about Automatic Application Deployment in the latter reference.
 </p>
-</div><h3 id="DriverManager,_the_service_provider_mechanism_and_memory_leaks">DriverManager, the service provider mechanism and memory leaks</h3><div class="text">
+</blockquote></td></tr></table><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="DriverManager, the service provider mechanism and memory leaks"><!--()--></a><a name="DriverManager,_the_service_provider_mechanism_and_memory_leaks"><strong>DriverManager, the service provider mechanism and memory leaks</strong></a></font></td></tr><tr><td><blockquote>
 
 <p><code>java.sql.DriverManager</code> supports the
 <a href="http://docs.oracle.com/javase/6/docs/api/index.html?java/sql/DriverManager.html">service
@@ -102,7 +71,7 @@ However, it is expected that applications do this for themselves via
 a <code>ServletContextListener</code>.
 </p>
 
-</div><h3 id="Database_Connection_Pool_(DBCP_2)_Configurations">Database Connection Pool (DBCP 2) Configurations</h3><div class="text">
+</blockquote></td></tr></table><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Database Connection Pool (DBCP) Configurations"><!--()--></a><a name="Database_Connection_Pool_(DBCP)_Configurations"><strong>Database Connection Pool (DBCP) Configurations</strong></a></font></td></tr><tr><td><blockquote>
 
 <p>The default database connection pool implementation in Apache Tomcat
 relies on the libraries from the
@@ -116,23 +85,23 @@ The following libraries are used:
 </ul>
 
 <p>
-These libraries are located in a single JAR at
+These libraries are located in a single JAR at 
 <code>$CATALINA_HOME/lib/tomcat-dbcp.jar</code>. However,
 only the classes needed for connection pooling have been included, and the
 packages have been renamed to avoid interfering with applications.
 </p>
 
-<p>DBCP 2.0 provides support for JDBC 4.1.</p>
+<p>DBCP 1.3 provides support for JDBC 3.0.</p>
 
-<div class="subsection"><h4 id="Installation">Installation</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Installation"><strong>Installation</strong></a></font></td></tr><tr><td><blockquote>
 
 <p>See the <a href="http://commons.apache.org/dbcp/configuration.html">
 DBCP documentation</a> for a complete list of configuration parameters.
 </p>
 
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="Preventing_database_connection_pool_leaks">Preventing database connection pool leaks</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Preventing database connection pool leaks"><!--()--></a><a name="Preventing_database_connection_pool_leaks"><strong>Preventing database connection pool leaks</strong></a></font></td></tr><tr><td><blockquote>
 
 <p>
 A database connection pool creates and manages a pool of connections
@@ -156,17 +125,15 @@ which opened these resources and never closed them.</p>
 
 <p>
 To configure a DBCP DataSource so that abandoned database connections are
-removed and recycled, add one or both of the following attributes to the
+removed and recycled add the following attribute to the
 <code>Resource</code> configuration for your DBCP DataSource:
 </p>
-<div class="codeBox"><pre><code>removeAbandonedOnBorrow=true</code></pre></div>
-<div class="codeBox"><pre><code>removeAbandonedOnMaintenance=true</code></pre></div>
-<p> The default for both of these attributes is <code>false</code>.  Note that
-<code>removeAbandonedOnMaintenance</code> has no effect unless pool
-maintenance is enabled by setting <code>timeBetweenEvictionRunsMillis</code>
-to a positive value.  See the
-<a href="http://commons.apache.org/dbcp/configuration.html">
-DBCP documentation</a> for full documentation on these attributes.
+
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>removeAbandoned="true"</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
+
+<p>
+When available database connections run low DBCP will recover and recycle
+any abandoned database connections it finds. The default is <code>false</code>.
 </p>
 
 <p>
@@ -174,7 +141,7 @@ Use the <code>removeAbandonedTimeout</code> attribute to set the number
 of seconds a database connection has been idle before it is considered abandoned.
 </p>
 
-<div class="codeBox"><pre><code>removeAbandonedTimeout="60"</code></pre></div>
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>removeAbandonedTimeout="60"</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
 <p>
 The default timeout for removing abandoned connections is 300 seconds.
@@ -185,16 +152,16 @@ The <code>logAbandoned</code> attribute can be set to <code>true</code>
 if you want DBCP to log a stack trace of the code which abandoned the
 database connection resources.
 </p>
-<div class="codeBox"><pre><code>logAbandoned="true"</code></pre></div>
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>logAbandoned="true"</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 <p>
 The default is <code>false</code>.
 </p>
 
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="MySQL_DBCP_Example">MySQL DBCP Example</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="MySQL DBCP Example"><!--()--></a><a name="MySQL_DBCP_Example"><strong>MySQL DBCP Example</strong></a></font></td></tr><tr><td><blockquote>
 
-<h5>0. Introduction</h5>
+<h3>0. Introduction</h3>
 <p>Versions of <a href="http://www.mysql.com/products/mysql/index.html">MySQL</a> and JDBC
 drivers that have been reported to work:
 </p>
@@ -206,7 +173,7 @@ drivers that have been reported to work:
 
 <p>Before you proceed, don't forget to copy the JDBC Driver's jar into <code>$CATALINA_HOME/lib</code>.</p>
 
-<h5>1. MySQL configuration</h5>
+<h3>1. MySQL configuration</h3>
 <p>
 Ensure that you follow these instructions as variations can cause problems.
 </p>
@@ -215,14 +182,16 @@ Ensure that you follow these instructions as variations can cause problems.
 Your MySQL user <strong>must</strong> have a password assigned. The driver
 will fail if you try to connect with an empty password.
 </p>
-<div class="codeBox"><pre><code>mysql&gt; GRANT ALL PRIVILEGES ON *.* TO javauser@localhost
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+mysql&gt; GRANT ALL PRIVILEGES ON *.* TO javauser@localhost 
     -&gt;   IDENTIFIED BY 'javadude' WITH GRANT OPTION;
 mysql&gt; create database javatest;
 mysql&gt; use javatest;
 mysql&gt; create table testdata (
     -&gt;   id int not null auto_increment primary key,
-    -&gt;   foo varchar(25),
-    -&gt;   bar int);</code></pre></div>
+    -&gt;   foo varchar(25), 
+    -&gt;   bar int);
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 <blockquote>
 <strong>Note:</strong> the above user should be removed once testing is
 complete!
@@ -230,7 +199,8 @@ complete!
 
 <p>Next insert some test data into the testdata table.
 </p>
-<div class="codeBox"><pre><code>mysql&gt; insert into testdata values(null, 'hello', 12345);
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+mysql&gt; insert into testdata values(null, 'hello', 12345);
 Query OK, 1 row affected (0.00 sec)
 
 mysql&gt; select * from testdata;
@@ -241,15 +211,17 @@ mysql&gt; select * from testdata;
 +----+-------+-------+
 1 row in set (0.00 sec)
 
-mysql&gt;</code></pre></div>
+mysql&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-<h5>2. Context configuration</h5>
+<h3>2. Context configuration</h3>
 <p>Configure the JNDI DataSource in Tomcat by adding a declaration for your
 resource to your <a href="config/context.html">Context</a>.</p>
 <p>For example:</p>
-<div class="codeBox"><pre><code>&lt;Context&gt;
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;Context&gt;
 
-    &lt;!-- maxTotal: Maximum number of database connections in pool. Make sure you
+    &lt;!-- maxActive: Maximum number of database connections in pool. Make sure you
          configure your mysqld max_connections large enough to handle
          all of your db connections. Set to -1 for no limit.
          --&gt;
@@ -259,7 +231,7 @@ resource to your <a href="config/context.html">Context</a>.</p>
          and the minEvictableIdleTimeMillis configuration parameter.
          --&gt;
 
-    &lt;!-- maxWaitMillis: Maximum time to wait for a database connection to become available
+    &lt;!-- maxWait: Maximum time to wait for a database connection to become available
          in ms, in this example 10 seconds. An Exception is thrown if
          this timeout is exceeded.  Set to -1 to wait indefinitely.
          --&gt;
@@ -270,21 +242,23 @@ resource to your <a href="config/context.html">Context</a>.</p>
          org.gjt.mm.mysql.Driver - we recommend using Connector/J though.
          Class name for the official MySQL Connector/J driver is com.mysql.jdbc.Driver.
          --&gt;
-
+    
     &lt;!-- url: The JDBC connection url for connecting to your MySQL database.
          --&gt;
 
   &lt;Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
-               maxTotal="100" maxIdle="30" maxWaitMillis="10000"
+               maxActive="100" maxIdle="30" maxWait="10000"
                username="javauser" password="javadude" driverClassName="com.mysql.jdbc.Driver"
                url="jdbc:mysql://localhost:3306/javatest"/&gt;
 
-&lt;/Context&gt;</code></pre></div>
+&lt;/Context&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-<h5>3. web.xml configuration</h5>
+<h3>3. web.xml configuration</h3>
 
 <p>Now create a <code>WEB-INF/web.xml</code> for this test application.</p>
-<div class="codeBox"><pre><code>&lt;web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;web-app xmlns="http://java.sun.com/xml/ns/j2ee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
 http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
@@ -296,11 +270,13 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
       &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
       &lt;res-auth&gt;Container&lt;/res-auth&gt;
   &lt;/resource-ref&gt;
-&lt;/web-app&gt;</code></pre></div>
+&lt;/web-app&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-<h5>4. Test code</h5>
-<p>Now create a simple <code>test.jsp</code> page for use later.</p>
-<div class="codeBox"><pre><code>&lt;%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %&gt;
+<h3>4. Test code</h3>
+<p>Now create a simple <code>test.jsp</code> page for use later.
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %&gt;
 &lt;%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %&gt;
 
 &lt;sql:query var="rs" dataSource="jdbc/TestDB"&gt;
@@ -314,21 +290,22 @@ select id, foo, bar from testdata
   &lt;body&gt;
 
   &lt;h2&gt;Results&lt;/h2&gt;
-
+  
 &lt;c:forEach var="row" items="${rs.rows}"&gt;
     Foo ${row.foo}&lt;br/&gt;
     Bar ${row.bar}&lt;br/&gt;
 &lt;/c:forEach&gt;
 
   &lt;/body&gt;
-&lt;/html&gt;</code></pre></div>
+&lt;/html&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
+</p>
 
-<p>That JSP page makes use of
-<a href="http://www.oracle.com/technetwork/java/index-jsp-135995.html">JSTL</a>'s
+<p>That JSP page makes use of <a href="http://java.sun.com/products/jsp/jstl">JSTL</a>'s
 SQL and Core taglibs. You can get it from
 <a href="http://tomcat.apache.org/taglibs/standard/">Apache Tomcat Taglibs - Standard Tag Library</a>
-project &mdash; just make sure you get a 1.1.x or later release. Once you have
-JSTL, copy <code>jstl.jar</code> and <code>standard.jar</code> to your web app's
+project &mdash; just make sure you get a 1.1.x release. Once you have JSTL,
+copy <code>jstl.jar</code> and <code>standard.jar</code> to your web app's
 <code>WEB-INF/lib</code> directory.
 
 </p>
@@ -340,10 +317,10 @@ as a warfile called <code>DBTest.war</code> or into a sub-directory called
 <code>http://localhost:8080/DBTest/test.jsp</code> to view the fruits of
 your hard work.</p>
 
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="Oracle_8i,_9i_&amp;_10g">Oracle 8i, 9i &amp; 10g</h4><div class="text">
-<h5>0.    Introduction</h5>
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Oracle 8i, 9i & 10g"><!--()--></a><a name="Oracle_8i,_9i_&_10g"><strong>Oracle 8i, 9i &amp; 10g</strong></a></font></td></tr><tr><td><blockquote>
+<h3>0.    Introduction</h3>
 
 <p>Oracle requires minimal changes from the MySQL configuration except for the
 usual gotchas :-)</p>
@@ -360,7 +337,7 @@ that <code>oracle.jdbc.driver.OracleDriver</code> is deprecated and support
 for this driver class will be discontinued in the next major release.
 </p>
 
-<h5>1. Context configuration</h5>
+<h3>1. Context configuration</h3>
 <p>In a similar manner to the mysql config above, you will need to define your
 Datasource in your <a href="config/context.html">Context</a>. Here we define a
 Datasource called myoracle using the thin driver to connect as user scott,
@@ -370,51 +347,57 @@ user scott.</p>
 
 <p>Use of the OCI driver should simply involve a changing thin to oci in the URL string.
 </p>
-<div class="codeBox"><pre><code>&lt;Resource name="jdbc/myoracle" auth="Container"
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;Resource name="jdbc/myoracle" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@127.0.0.1:1521:mysid"
-              username="scott" password="tiger" maxTotal="20" maxIdle="10"
-              maxWaitMillis="-1"/&gt;</code></pre></div>
+              username="scott" password="tiger" maxActive="20" maxIdle="10"
+              maxWait="-1"/&gt; 
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-<h5>2.    web.xml configuration</h5>
+<h3>2.    web.xml configuration</h3>
 <p>You should ensure that you respect the element ordering defined by the DTD when you
 create you applications web.xml file.</p>
-<div class="codeBox"><pre><code>&lt;resource-ref&gt;
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;resource-ref&gt;
  &lt;description&gt;Oracle Datasource example&lt;/description&gt;
  &lt;res-ref-name&gt;jdbc/myoracle&lt;/res-ref-name&gt;
  &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
  &lt;res-auth&gt;Container&lt;/res-auth&gt;
-&lt;/resource-ref&gt;</code></pre></div>
-<h5>3.   Code example</h5>
-<p>You can use the same example application as above (assuming you create the required DB
+&lt;/resource-ref&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
+<h3>3.   Code example</h3>
+<p>You can use the same example application as above (asuming you create the required DB
 instance, tables etc.) replacing the Datasource code with something like</p>
-<div class="codeBox"><pre><code>Context initContext = new InitialContext();
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+Context initContext = new InitialContext();
 Context envContext  = (Context)initContext.lookup("java:/comp/env");
 DataSource ds = (DataSource)envContext.lookup("jdbc/myoracle");
 Connection conn = ds.getConnection();
-//etc.</code></pre></div>
-</div></div>
+//etc.
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
+</blockquote></td></tr></table>
 
 
-<div class="subsection"><h4 id="PostgreSQL">PostgreSQL</h4><div class="text">
-<h5>0.    Introduction</h5>
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="PostgreSQL"><strong>PostgreSQL</strong></a></font></td></tr><tr><td><blockquote>
+<h3>0.    Introduction</h3>
 <p>PostgreSQL is configured in a similar manner to Oracle.</p>
 
-<h5>1. Required files </h5>
+<h3>1. Required files </h3>
 <p>
 Copy the Postgres JDBC jar to $CATALINA_HOME/lib. As with Oracle, the
 jars need to be in this directory in order for DBCP's Classloader to find
 them. This has to be done regardless of which configuration step you take next.
 </p>
 
-<h5>2. Resource configuration</h5>
+<h3>2. Resource configuration</h3>
 
 <p>
 You have two choices here: define a datasource that is shared across all Tomcat
 applications, or define a datasource specifically for one application.
 </p>
 
-<h6>2a. Shared resource configuration</h6>
+<h4>2a. Shared resource configuration</h4>
 <p>
 Use this option if you wish to define a datasource that is shared across
 multiple Tomcat applications, or if you just prefer defining your datasource
@@ -423,11 +406,13 @@ in this file.
 <p><i>This author has not had success here, although others have reported so.
 Clarification would be appreciated here.</i></p>
 
-<div class="codeBox"><pre><code>&lt;Resource name="jdbc/postgres" auth="Container"
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;Resource name="jdbc/postgres" auth="Container"
           type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
           url="jdbc:postgresql://127.0.0.1:5432/mydb"
-          username="myuser" password="mypasswd" maxTotal="20" maxIdle="10" maxWaitMillis="-1"/&gt;</code></pre></div>
-<h6>2b. Application-specific resource configuration</h6>
+          username="myuser" password="mypasswd" maxActive="20" maxIdle="10" maxWait="-1"/&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
+<h4>2b. Application-specific resource configuration</h4>
 
 <p>
 Use this option if you wish to define a datasource specific to your application,
@@ -440,24 +425,28 @@ Create a resource definition for your <a href="config/context.html">Context</a>.
 The Context element should look something like the following.
 </p>
 
-<div class="codeBox"><pre><code>&lt;Context&gt;
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;Context&gt;
 
 &lt;Resource name="jdbc/postgres" auth="Container"
           type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
           url="jdbc:postgresql://127.0.0.1:5432/mydb"
-          username="myuser" password="mypasswd" maxTotal="20" maxIdle="10"
-maxWaitMillis="-1"/&gt;
-&lt;/Context&gt;</code></pre></div>
+          username="myuser" password="mypasswd" maxActive="20" maxIdle="10"
+maxWait="-1"/&gt;
+&lt;/Context&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-<h5>3. web.xml configuration</h5>
-<div class="codeBox"><pre><code>&lt;resource-ref&gt;
+<h3>3. web.xml configuration</h3>
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+&lt;resource-ref&gt;
  &lt;description&gt;postgreSQL Datasource example&lt;/description&gt;
  &lt;res-ref-name&gt;jdbc/postgres&lt;/res-ref-name&gt;
  &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
  &lt;res-auth&gt;Container&lt;/res-auth&gt;
-&lt;/resource-ref&gt;</code></pre></div>
+&lt;/resource-ref&gt;
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-<h5>4. Accessing the datasource</h5>
+<h4>4. Accessing the datasource</h4>
 <p>
 When accessing the datasource programmatically, remember to prepend
 <code>java:/comp/env</code> to your JNDI lookup, as in the following snippet of
@@ -465,7 +454,8 @@ code. Note also that "jdbc/postgres" can be replaced with any value you prefer, 
 you change it in the above resource definition file as well.
 </p>
 
-<div class="codeBox"><pre><code>InitialContext cxt = new InitialContext();
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+InitialContext cxt = new InitialContext();
 if ( cxt == null ) {
    throw new Exception("Uh oh -- no context!");
 }
@@ -474,64 +464,67 @@ DataSource ds = (DataSource) cxt.lookup( "java:/comp/env/jdbc/postgres" );
 
 if ( ds == null ) {
    throw new Exception("Data source not found!");
-}</code></pre></div>
+}
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 
-</div></div>
-</div><h3 id="Non-DBCP_Solutions">Non-DBCP Solutions</h3><div class="text">
+</blockquote></td></tr></table>
+</blockquote></td></tr></table><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Non-DBCP Solutions"><!--()--></a><a name="Non-DBCP_Solutions"><strong>Non-DBCP Solutions</strong></a></font></td></tr><tr><td><blockquote>
 <p>
 These solutions either utilise a single connection to the database (not recommended for anything other
 than testing!) or some other pooling technology.
 </p>
-</div><h3 id="Oracle_8i_with_OCI_client">Oracle 8i with OCI client</h3><div class="text">
-<div class="subsection"><h4 id="Oracle_8i_with_OCI_client/Introduction">Introduction</h4><div class="text">
+</blockquote></td></tr></table><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Oracle 8i with OCI client"><!--()--></a><a name="Oracle_8i_with_OCI_client"><strong>Oracle 8i with OCI client</strong></a></font></td></tr><tr><td><blockquote>
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Oracle 8i with OCI client/Introduction"><!--()--></a><a name="Oracle_8i_with_OCI_client/Introduction"><strong>Introduction</strong></a></font></td></tr><tr><td><blockquote>
 <p>Whilst not strictly addressing the creation of a JNDI DataSource using the OCI client, these notes can be combined with the
 Oracle and DBCP solution above.</p>
 <p>
 In order to use OCI driver, you should have an Oracle client installed. You should have installed
 Oracle8i(8.1.7) client from cd,  and download the suitable JDBC/OCI
-driver(Oracle8i 8.1.7.1 JDBC/OCI Driver) from <a href="http://otn.oracle.com/">otn.oracle.com</a>.
+driver(Oracle8i 8.1.7.1 JDBC/OCI Driver) from <a href="http://otn.oracle.com/">otn.oracle.com</a>. 
 </p>
 <p>
 After renaming <code>classes12.zip</code> file to <code>classes12.jar</code>
-for Tomcat, copy it into <code>$CATALINA_HOME/lib</code>.
+for Tomcat, copy it into <code>$CATALINA_HOME/lib</code>. 
 You may also have to remove the <code>javax.sql.*</code> classes
 from this file depending upon the version of Tomcat and JDK you are using.
 </p>
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="Putting_it_all_together">Putting it all together</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Putting it all together"><!--()--></a><a name="Putting_it_all_together"><strong>Putting it all together</strong></a></font></td></tr><tr><td><blockquote>
 <p>
 Ensure that you have the <code>ocijdbc8.dll</code> or <code>.so</code> in your <code>$PATH</code> or <code>LD_LIBRARY_PATH</code>
- (possibly in <code>$ORAHOME\bin</code>) and also confirm that the native library can be loaded by a simple test program
+ (possibly in <code>$ORAHOME\bin</code>) and also confirm that the native library can be loaded by a simple test program 
 using <code>System.loadLibrary("ocijdbc8");</code>
 </p>
 <p>
 You should next create a simple test servlet or jsp that has these
 <strong>critical lines</strong>:
 </p>
-<div class="codeBox"><pre><code>DriverManager.registerDriver(new
+<div align="left"><table cellspacing="4" cellpadding="0" border="0"><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#ffffff" height="1"><pre>
+DriverManager.registerDriver(new
 oracle.jdbc.driver.OracleDriver());
 conn =
-DriverManager.getConnection("jdbc:oracle:oci8:@database","username","password");</code></pre></div>
+DriverManager.getConnection("jdbc:oracle:oci8:@database","username","password");
+</pre></td><td bgcolor="#023264" width="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr><tr><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td><td bgcolor="#023264" width="1" height="1"><img src="./images/void.gif" alt="" width="1" height="1" vspace="0" hspace="0" border="0"></td></tr></table></div>
 <p>
-where database is of the form <code>host:port:SID</code> Now if you try to access the URL of your
-test servlet/jsp and what you get is a
+where database is of the form <code>host:port:SID</code> Now if you try to access the URL of your 
+test servlet/jsp and what you get is a 
 <code>ServletException</code> with a root cause of <code>java.lang.UnsatisfiedLinkError:get_env_handle</code>.
 </p>
 <p>
-First, the <code>UnsatisfiedLinkError</code> indicates that you have
-</p>
+First, the <code>UnsatisfiedLinkError</code> indicates that you have 
 <ul>
 <li>a mismatch between your JDBC classes file and
 your Oracle client version. The giveaway here is the message stating that a needed library file cannot be
 found. For example, you may be using a classes12.zip file from Oracle Version 8.1.6 with a Version 8.1.5
-Oracle client. The classesXXX.zip file and Oracle client software versions must match.
+Oracle client. The classeXXXs.zip file and Oracle client software versions must match.
 </li>
 <li>A <code>$PATH</code>, <code>LD_LIBRARY_PATH</code> problem.</li>
-<li>It has been reported that ignoring the driver you have downloaded from otn and using
+<li>It has been reported that ignoring the driver you have downloded from otn and using 
 the classes12.zip file from the directory <code>$ORAHOME\jdbc\lib</code> will also work.
 </li>
 </ul>
+</p>
 <p>
 Next you may experience the error <code>ORA-06401 NETCMN: invalid driver designator</code>
 </p>
@@ -545,12 +538,12 @@ Change the database connect string (of the form <code>host:port:SID</code>) with
 <p>
 <i>Ed. Hmm, I don't think this is really needed if you sort out your TNSNames - but I'm not an Oracle DBA :-)</i>
 </p>
-</div></div>
-</div><h3 id="Common_Problems">Common Problems</h3><div class="text">
+</blockquote></td></tr></table>
+</blockquote></td></tr></table><table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#525D76"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Common Problems"><!--()--></a><a name="Common_Problems"><strong>Common Problems</strong></a></font></td></tr><tr><td><blockquote>
 <p>Here are some common problems encountered with a web application which
 uses a database and tips for how to solve them.</p>
 
-<div class="subsection"><h4 id="Intermittent_Database_Connection_Failures">Intermittent Database Connection Failures</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Intermittent Database Connection Failures"><!--()--></a><a name="Intermittent_Database_Connection_Failures"><strong>Intermittent Database Connection Failures</strong></a></font></td></tr><tr><td><blockquote>
 <p>
 Tomcat runs within a JVM.  The JVM periodically performs garbage collection
 (GC) to remove java objects which are no longer being used.  When the JVM
@@ -570,11 +563,11 @@ than one second.  The remainder will only take a few seconds.  Rarely,
 if ever should a GC take more than 10 seconds.</p>
 
 <p>Make sure that the db connection timeout is set to 10-15 seconds.
-For the DBCP you set this using the parameter <code>maxWaitMillis</code>.</p>
+For the DBCP you set this using the parameter <code>maxWait</code>.</p>
 
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="Random_Connection_Closed_Exceptions">Random Connection Closed Exceptions</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Random Connection Closed Exceptions"><!--()--></a><a name="Random_Connection_Closed_Exceptions"><strong>Random Connection Closed Exceptions</strong></a></font></td></tr><tr><td><blockquote>
 <p>
 These can occur when one request gets a db connection from the connection
 pool and closes it twice.  When using a connection pool, closing the
@@ -606,7 +599,8 @@ of events which could cause this error in Tomcat:
 Here is an example of properly written code to use a database connection
 obtained from a connection pool:
 </p>
-<div class="codeBox"><pre><code>  Connection conn = null;
+<pre>
+  Connection conn = null;
   Statement stmt = null;  // Or PreparedStatement if needed
   ResultSet rs = null;
   try {
@@ -637,40 +631,29 @@ obtained from a connection pool:
       try { conn.close(); } catch (SQLException e) { ; }
       conn = null;
     }
-  }</code></pre></div>
+  }
+</pre>
 
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="Context_versus_GlobalNamingResources">Context versus GlobalNamingResources</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="Context versus GlobalNamingResources"><!--()--></a><a name="Context_versus_GlobalNamingResources"><strong>Context versus GlobalNamingResources</strong></a></font></td></tr><tr><td><blockquote>
 <p>
   Please note that although the above instructions place the JNDI declarations in a Context
-  element, it is possible and sometimes desirable to place these declarations in the
+  element, it is possible and sometimes desirable to place these declarations in the 
   <a href="config/globalresources.html">GlobalNamingResources</a> section of the server
   configuration file.  A resource placed in the GlobalNamingResources section will be shared
   among the Contexts of the server.
 </p>
-</div></div>
+</blockquote></td></tr></table>
 
-<div class="subsection"><h4 id="JNDI_Resource_Naming_and_Realm_Interaction">JNDI Resource Naming and Realm Interaction</h4><div class="text">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td bgcolor="#828DA6"><font color="#ffffff" face="arial,helvetica.sanserif"><a name="JNDI Resource Naming and Realm Interaction"><!--()--></a><a name="JNDI_Resource_Naming_and_Realm_Interaction"><strong>JNDI Resource Naming and Realm Interaction</strong></a></font></td></tr><tr><td><blockquote>
 <p>
   In order to get Realms to work, the realm must refer to the datasource as
   defined in the &lt;GlobalNamingResources&gt; or &lt;Context&gt; section, not a datasource as renamed
   using &lt;ResourceLink&gt;.
 </p>
-</div></div>
+</blockquote></td></tr></table> 
 
-</div><div class="noprint"><h3 id="comments_section">
-                  Comments
-                </h3><div class="text"><p class="notice"><strong>Notice: </strong>This comments section collects your suggestions
-                    on improving documentation for Apache Tomcat.<br><br>
-                    If you have trouble and need help, read
-                    <a href="http://tomcat.apache.org/findhelp.html">Find Help</a> page
-                    and ask your question on the tomcat-users
-                    <a href="http://tomcat.apache.org/lists.html">mailing list</a>.
-                    Do not ask such questions here. This is not a Q&amp;A section.<br><br>
-                    The Apache Comments System is explained <a href="./comments.html">here</a>.
-                    Comments may be removed by our moderators if they are either
-                    implemented or considered invalid/off-topic.
-                  </p><div id="comments_thread"></div></div></div></div></div></div></div><footer><div id="footer">
-    Copyright &copy; 1999-2017, The Apache Software Foundation
-  </div></footer></div></body></html>
+</blockquote></td></tr></table></td></tr><!--FOOTER SEPARATOR--><tr><td colspan="2"><hr noshade="noshade" size="1"></td></tr><!--PAGE FOOTER--><tr><td colspan="2"><div align="center"><font color="#525D76" size="-1"><em>
+        Copyright &copy; 1999-2016, Apache Software Foundation
+        </em></font></div></td></tr></table></body></html>

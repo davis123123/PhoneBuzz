@@ -46,8 +46,8 @@
 &lt;user username="tomcat" password="s3cret" roles="admin-gui"/&gt;
 </pre>
    <p>
-    Note that for Tomcat 7 onwards, the roles required to use the host manager
-    application were changed from the single <tt>admin</tt> role to the
+    Note that for Tomcat 6.0.30 onwards, the roles required to use the host
+    manager application were changed from the single <tt>admin</tt> role to the
     following two roles. You will need to assign the role(s) required for
     the functionality you wish to access.
    </p>
@@ -60,6 +60,8 @@
     To maintain the CSRF protection:
    </p>
    <ul>
+    <li>The deprecated <tt>admin</tt> role should not be assigned to any
+        user.</li>
     <li>Users with the <tt>admin-gui</tt> role should not be granted the
        <tt>admin-script</tt> role.</li>
     <li>If the text interface is accessed through a browser (e.g. for testing

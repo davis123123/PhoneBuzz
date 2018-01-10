@@ -3,27 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
- 
-    <display-name>TwiML PhoneBuzz</display-name>
- 
+
+    <display-name>Twilio TwiML App</display-name>
+
     <servlet>
         <servlet-name>TwilioServlet</servlet-name>
         <servlet-class>com.twilio.TwilioServlet</servlet-class>
     </servlet>
- 
-    <servlet>
-        <servlet-name>TwilioHandleKeyServlet</servlet-name>
-        <servlet-class>com.twilio.TwilioHandleKeyServlet</servlet-class>
-    </servlet>
- 
+
     <servlet-mapping>
         <servlet-name>TwilioServlet</servlet-name>
-        <url-pattern>/phonebuzz</url-pattern>
+        <url-pattern>/twiml</url-pattern>
     </servlet-mapping>
- 
-    <servlet-mapping>
-        <servlet-name>TwilioHandleKeyServlet</servlet-name>
-        <url-pattern>/handle-key</url-pattern>
-    </servlet-mapping>
-</web-app>
 
+</web-app>

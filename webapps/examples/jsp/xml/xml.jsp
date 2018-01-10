@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -34,7 +34,7 @@
 </head>
 
 <body>
-This is the output of a simple JSP using XML format.
+This is the output of a simple JSP using XML format. 
 <br />
 
 <div>Use a jsp:scriptlet to loop from 1 to 10: </div>
@@ -56,7 +56,7 @@ This is the output of a simple JSP using XML format.
 ]]>
 
 <div align="left">
-  Use a jsp:expression to write the date and time in the browser's locale:
+  Use a jsp:expression to write the date and time in the browser's locale: 
   <jsp:expression>getDateTimeStr(request.getLocale())</jsp:expression>
 </div>
 

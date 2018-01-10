@@ -46,7 +46,7 @@
 &lt;user username="tomcat" password="s3cret" roles="manager-gui"/&gt;
 </pre>
    <p>
-    Note that for Tomcat 7 onwards, the roles required to use the manager
+    Note that for Tomcat 6.0.30 onwards, the roles required to use the manager
     application were changed from the single <tt>manager</tt> role to the
     following four roles. You will need to assign the role(s) required for
     the functionality you wish to access.
@@ -65,6 +65,8 @@
     are not. To maintain the CSRF protection:
    </p>
    <ul>
+    <li>The deprecated <tt>manager</tt> role should not be assigned to any
+        user.</li>
     <li>Users with the <tt>manager-gui</tt> role should not be granted either
         the <tt>manager-script</tt> or <tt>manager-jmx</tt> roles.</li>
     <li>If the text or jmx interfaces are accessed through a browser (e.g. for
